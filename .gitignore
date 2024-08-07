@@ -1,0 +1,4 @@
+.idea
+bot_cache
+**/bin/
+**/obj/
