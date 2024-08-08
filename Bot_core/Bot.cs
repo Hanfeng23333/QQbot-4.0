@@ -60,8 +60,18 @@ public class Bot
         thread_active = false;
         receive_thread?.Join();
         send_thread?.Join();
+        
         if (bot == null) 
             return;
+
+        var save_list = plugins.Values.Select(plugin => plugin.save_data()
+            .ContinueWith(task =>
+            {
+                Console.WriteLine(task.IsCompletedSuccessfully
+                    ? $"Save the data of {plugin.plugin_name} Plugin successfully!"
+                    : $"Failed to save the data of {plugin.plugin_name} Plugin!\nError message: {(task.Exception != null ? string.Join("\n", task.Exception.InnerExceptions) : "Unknown error!")}");
+            }));
+        Task.WaitAll(save_list.ToArray());
         if (save_info().Result)
             Console.WriteLine("save the bot info successfully!");
         bot.Dispose();
@@ -279,6 +289,7 @@ public class Bot
         {
             while (received_message_queue.TryDequeue(out var message_chain))
             {
+                //Console.WriteLine($"Received a message: {message_chain.ToPreviewString()}");
                 if (message_chain.FriendUin != master_account && !white_group.Contains(message_chain.GroupUin.GetValueOrDefault(0))) 
                     continue;
                 var plugin_message = Functions_lib.generate_plugin_message(message_chain, account);
@@ -304,6 +315,7 @@ public class Bot
         {
             while (send_message_queue.TryDequeue(out var message_chain))
             {
+                //Console.WriteLine($"Send a message: {message_chain.ToPreviewString()}");
                 var send_task = bot?.SendMessage(message_chain);
                 if(send_task == null)
                     continue;

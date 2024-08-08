@@ -75,6 +75,7 @@ namespace Plugins
             public string key_word;
             public string[] args;
             public uint source_id;
+            public uint? target_id;
             public uint? group_id;
             public MessageChain message_source;
         }

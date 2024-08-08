@@ -33,9 +33,11 @@ public static class Functions_lib
                 break;
             case [MentionEntity mention_entity,TextEntity text_entity]:
                 (message.key_word,message.args) = parse(text_entity.Text,mention_entity.Uin == bot_account);
+                message.target_id = mention_entity.Uin;
                 break;
             case [ForwardEntity,MentionEntity mention_entity,TextEntity text_entity]:
                 (message.key_word,message.args) = parse(text_entity.Text,mention_entity.Uin == bot_account);
+                message.target_id = mention_entity.Uin;
                 break;
             default:
                 return null;
