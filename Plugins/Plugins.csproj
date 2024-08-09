@@ -10,4 +10,12 @@
       <PackageReference Include="Lagrange.Core" Version="0.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Public_plugins\Plugin_interface.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Public_plugins\Tarot\Assets\" />
+    </ItemGroup>
+
 </Project>

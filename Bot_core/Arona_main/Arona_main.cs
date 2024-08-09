@@ -1,3 +1,4 @@
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -124,7 +125,13 @@ public sealed class Arona_main:Base_plugin
             Console.WriteLine("Arona_main failed to connect to bot!!!");
         }
 
-        var load_stream = new FileStream(Path.Combine(plugin_file_path,"user_data.data"), FileMode.OpenOrCreate, FileAccess.Read,FileShare.Inheritable);
+        var data_path = Path.Combine(plugin_file_path, "user_data.data");
+        if (!File.Exists(data_path))
+        {
+            await File.WriteAllTextAsync(data_path, "{}");
+        }
+        
+        var load_stream = new FileStream(data_path, FileMode.Open, FileAccess.Read,FileShare.Inheritable);
         var data = await JsonSerializer.DeserializeAsync<Dictionary<uint, User>>(load_stream);
         if (data != null)
         {
@@ -135,6 +142,7 @@ public sealed class Arona_main:Base_plugin
         {
             Console.WriteLine("Arona_main failed to load data!");
         }
+        await load_stream.DisposeAsync();
     }
 
     public override async Task save_data()
@@ -202,7 +210,6 @@ public sealed class Arona_main:Base_plugin
         reply_message.Mention(message.source_id);
         if (message.args.Length == 0)
         {
-            reply_message.Mention(message.source_id);
             var user = user_data[message.source_id];
             long stone;
             if (user.last_sign != null)
